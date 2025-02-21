@@ -314,6 +314,14 @@ struct OperationMeta
     LedgerEntryChanges changes;
 };
 
+struct OperationMetaV2
+{
+    ExtensionPoint ext;
+    LedgerEntryChanges changes;
+    ContractEvent events<>;
+    DiagnosticEvent diagnosticEvents<>;
+};
+
 struct TransactionMetaV1
 {
     LedgerEntryChanges txChanges; // tx level changes if any
@@ -421,6 +429,12 @@ struct SorobanTransactionMeta
     DiagnosticEvent diagnosticEvents<>;
 };
 
+struct SorobanTransactionMetaV2
+{
+    SorobanTransactionMetaExt ext;
+    SCVal returnValue;
+};
+
 struct TransactionMetaV3
 {
     ExtensionPoint ext;
@@ -432,6 +446,17 @@ struct TransactionMetaV3
                                          // applied if any
     SorobanTransactionMeta* sorobanMeta; // Soroban-specific meta (only for 
                                          // Soroban transactions).
+};
+
+struct TransactionMetaV4
+{
+    ExtensionPoint ext;
+    LedgerEntryChanges txChangesBefore;
+    OperationMetaV2 operations<>;
+    LedgerEntryChanges txChangesAfter;
+    SorobanTransactionMetaV2* sorobanMeta;
+    ContractEvent events<>;
+    DiagnosticEvent txDiagnosticEvents<>;
 };
 
 // This is in Stellar-ledger.x to due to a circular dependency 
@@ -453,6 +478,8 @@ case 2:
     TransactionMetaV2 v2;
 case 3:
     TransactionMetaV3 v3;
+case 4:
+    TransactionMetaV4 v4;
 };
 
 // This struct groups together changes on a per transaction basis
